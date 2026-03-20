@@ -1,4 +1,4 @@
-AbstractSpatialStore.javapackage org.exist.indexing.spatial;
+package org.exist.indexing.spatial;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Envelope;
