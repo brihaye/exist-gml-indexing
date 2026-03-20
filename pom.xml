@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>eXist-db GML Spatial Index V2</name>
-    <description>High-precision spatial index for eXist-db with GML 2/3 support and geodesic cache.</description>
+    <description>High-precision spatial index for eXist-db with GML support and geodesic cache.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,6 @@
         <jts.version>1.19.0</jts.version>
         <proj4j.version>1.1.5</proj4j.version>
         <hsqldb.version>2.7.2</hsqldb.version>
-        <jackson.version>2.15.2</jackson.version>
         <junit.version>5.9.3</junit.version>
     </properties>
 
@@ -28,6 +27,9 @@
         <repository>
             <id>exist-db-releases</id>
             <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -35,6 +37,20 @@
         <dependency>
             <groupId>org.exist-db</groupId>
             <artifactId>exist-core</artifactId>
+            <version>${exist.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-api</artifactId>
+            <version>${exist.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-util</artifactId>
             <version>${exist.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -58,20 +74,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wololo</groupId>
-            <artifactId>jts2geojson</artifactId>
-            <version>0.18.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
@@ -84,8 +94,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
