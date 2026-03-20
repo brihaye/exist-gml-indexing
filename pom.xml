@@ -10,19 +10,35 @@
     <packaging>jar</packaging>
 
     <name>eXist-db GML Spatial Index V2</name>
-    <description>Index spatial haute précision pour eXist-db avec support GML 2/3 et cache géodésique.</description>
+    <description>High-precision spatial index for eXist-db with GML 2/3 support and geodesic cache.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <exist.version>6.2.0</exist.version>
         <jts.version>1.19.0</jts.version>
         <proj4j.version>1.1.5</proj4j.version>
         <hsqldb.version>2.7.2</hsqldb.version>
         <jackson.version>2.15.2</jackson.version>
+        <junit.version>5.9.3</junit.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>exist-db-releases</id>
+            <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-core</artifactId>
+            <version>${exist.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
@@ -46,6 +62,7 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.wololo</groupId>
             <artifactId>jts2geojson</artifactId>
@@ -55,7 +72,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -66,6 +83,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
     </build>
