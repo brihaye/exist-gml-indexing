@@ -9,27 +9,18 @@
     <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>eXist-db GML Spatial Index V2</name>
-    <description>High-precision spatial index for eXist-db with GML support and geodesic cache.</description>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <exist.version>6.2.0</exist.version>
         <jts.version>1.19.0</jts.version>
-        <proj4j.version>1.1.5</proj4j.version>
-        <hsqldb.version>2.7.2</hsqldb.version>
-        <junit.version>5.9.3</junit.version>
     </properties>
 
     <repositories>
         <repository>
             <id>exist-db-releases</id>
             <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -42,47 +33,31 @@
         </dependency>
 
         <dependency>
-            <groupId>org.exist-db</groupId>
-            <artifactId>exist-api</artifactId>
-            <version>${exist.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.exist-db</groupId>
-            <artifactId>exist-util</artifactId>
-            <version>${exist.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
             <version>${jts.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.locationtech.proj4j</groupId>
             <artifactId>proj4j</artifactId>
-            <version>${proj4j.version}</version>
+            <version>1.1.5</version>
         </dependency>
-
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
+            <version>2.7.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -96,11 +71,6 @@
                 <configuration>
                     <release>11</release>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
             </plugin>
         </plugins>
     </build>
