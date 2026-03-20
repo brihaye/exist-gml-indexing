@@ -1,49 +1,48 @@
 package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
+import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.AbstractIndexWorker;
-import org.exist.indexing.Index;
-import org.exist.storage.transaction.Transaction;
-import org.exist.xquery.TermReversedList;
-import java.util.logging.Logger;
+import org.exist.indexing.IndexController;
+import org.exist.storage.txn.Txn; // Changement majeur : Txn au lieu de Transaction
+import org.exist.xquery.value.Type;
+import org.exist.xquery.Occurrences;
+
+import java.util.Map;
 
 /**
- * Gère le cycle de vie des données indexées (Suppression / Mise à jour).
+ * Worker pour l'indexation spatiale compatible eXist-db 6.x
  */
 public class SpatialIndexWorker extends AbstractIndexWorker {
 
-    private static final Logger LOG = Logger.getLogger(SpatialIndexWorker.class.getName());
-    private final SpatialStore store;
+    private final SpatialIndex index;
 
-    public SpatialIndexWorker(Index index, SpatialStore store) {
-        super(index);
-        this.store = store;
+    public SpatialIndexWorker(SpatialIndex index, IndexController controller) {
+        super(index, controller);
+        this.index = index;
     }
 
     @Override
-    public void removeDocument(DocumentImpl doc, Transaction txn) {
-        // Logique de nettoyage : quand un doc est supprimé, on nettoie le SQL
-        try {
-            // Ici, on pourrait ajouter une méthode deleteByDocId dans le Store
-            LOG.info("Nettoyage de l'index spatial pour le document : " + doc.getURI());
-            store.commit(txn != null ? txn.getId() : 0);
-        } catch (Exception e) {
-            LOG.severe("Erreur lors de la suppression du document de l'index : " + e.getMessage());
+    public String getIndexId() {
+        return SpatialIndex.ID;
+    }
+
+    @Override
+    public void occurrence(Txn transaction, NodeProxy node, Occurrences occurrences) {
+        // Logique d'indexation lors de la lecture d'un nœud GML
+        String gml = node.getStringValue();
+        if (gml != null && gml.contains("gml:")) {
+            index.getStore().addGeometry(transaction, node, gml);
         }
     }
 
     @Override
-    public TermReversedList getReversedList(String field) {
-        // Utilisé pour l'optimisation des requêtes, on peut laisser null pour l'instant
-        return null;
+    public void remove(Txn transaction, DocumentImpl document) {
+        index.getStore().removeDocument(transaction, document);
     }
 
     @Override
     public void flush() {
-        try {
-            store.commit(0);
-        } catch (Exception e) {
-            LOG.warning("Echec du flush de l'index spatial.");
-        }
+        index.getStore().flush();
     }
 }
