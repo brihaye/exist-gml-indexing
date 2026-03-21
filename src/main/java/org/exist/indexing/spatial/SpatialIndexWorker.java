@@ -49,6 +49,7 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
+        // Pas d'action spécifique
     }
 
     @Override
@@ -61,15 +62,13 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    /**
-     * Cette signature utilise des types bruts (Raw Types) pour IStoredNode.
-     * C'est le dernier recours quand les bornes de T sont incohérentes entre 
-     * la compilation et l'interface binaire du JAR.
-     */
+    // SIGNATURE EXACTE POUR EXIST 6.2.0
+    // Le <T extends IStoredNode<T>> est la clé du verrou.
     @Override
-    @SuppressWarnings("rawtypes")
-    public <T> IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
-        return null;
+    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+        // Ta logique de 2007 (ancêtre GML) reviendra ici plus tard.
+        // Pour l'instant, on cherche le BUILD SUCCESS.
+        return node; 
     }
 
     @Override
