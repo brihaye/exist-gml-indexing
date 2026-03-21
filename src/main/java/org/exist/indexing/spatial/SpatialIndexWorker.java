@@ -61,9 +61,10 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // VERSION WILDCARD : On retire le <T> explicite pour coller à l'effacement de type (erasure)
+    // ON REPREND LA SIGNATURE EXACTE DU MESSAGE D'ERREUR
+    // Mais on ajoute le paramètre de type <T> pour satisfaire l'interface
     @Override
-    public <T> IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
