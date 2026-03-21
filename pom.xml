@@ -17,8 +17,8 @@
 
     <repositories>
         <repository>
-            <id>exist-db-releases</id>
-            <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
+            <id>exist-db</id>
+            <url>https://maven.exist-db.org/repository/public/</url>
         </repository>
     </repositories>
 
