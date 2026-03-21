@@ -1,44 +1,37 @@
 package org.exist.indexing.spatial;
 
-import org.locationtech.jts.geom.Geometry;
-import javax.xml.stream.XMLStreamReader;
+import org.exist.indexing.AbstractIndex;
+import org.exist.indexing.IndexWorker;
+import org.exist.indexing.IndexController;
 import java.util.Map;
 
-/**
- * Point d'entrée principal pour l'indexeur spatial eXist-db.
- */
-public class SpatialIndex {
+public class SpatialIndex extends AbstractIndex {
 
-    private final SpatialStore store;
-    private final UniversalGMLHandler handler;
+    // On utilise AbstractSpatialStore comme base commune
+    private AbstractSpatialStore store;
 
-    public SpatialIndex(Map<String, String> params) throws Exception {
-        // Initialisation de la chaîne de composants
-        ProjectionService ps = new ProjectionService();
-        this.store = new BBoxOrientedSQLStore(ps);
-        this.handler = new UniversalGMLHandler(ps);
-        
-        this.store.init(params);
+    @Override
+    public void configure(IndexController controller, Map<String, String> params) {
+        super.configure(controller, params);
+        // Initialisation du store (exemple avec le BBox Store)
+        ProjectionService projectionService = new ProjectionService();
+        this.store = new BBoxOrientedSQLStore(projectionService);
     }
 
+    @Override
+    public IndexWorker getWorker(IndexController controller) {
+        return new SpatialIndexWorker(this, controller);
+    }
+
+    // UNE SEULE FOIS cette méthode pour que le Worker puisse y accéder
     public AbstractSpatialStore getStore() {
-        return this.store; // ou le nom de ta variable interne
+        return this.store;
     }
-    /**
-     * Méthode appelée par eXist lors du passage sur un nœud GML
-     */
-    public void index(String nodeId, XMLStreamReader reader, long txnId) throws Exception {
-        // 1. On parse le GML pour obtenir une géométrie JTS (éventuellement MultiPart)
-        Geometry geom = handler.parse(reader);
-        
-        if (geom != null) {
-            // 2. On décompose et on stocke chaque partie (Polygone simple)
-            for (int i = 0; i < geom.getNumGeometries(); i++) {
-                store.addGeometryPart(nodeId, geom.getGeometryN(i), i, null, txnId);
-            }
+
+    @Override
+    public void close() {
+        if (store != null) {
+            store.flush();
         }
     }
-
-    public void commit(long txnId) throws Exception { store.commit(txnId); }
-    public void shutdown() throws Exception { store.shutdown(); }
 }
