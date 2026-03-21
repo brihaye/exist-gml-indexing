@@ -4,8 +4,8 @@ import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.AbstractIndexWorker;
 import org.exist.indexing.IndexController;
+import org.exist.indexing.Occurrences;
 import org.exist.storage.txn.Txn;
-import org.exist.xquery.Occurrences; // Retour à l'import standard
 
 public class SpatialIndexWorker extends AbstractIndexWorker {
 
