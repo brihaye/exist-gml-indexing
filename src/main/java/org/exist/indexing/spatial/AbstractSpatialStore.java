@@ -4,6 +4,7 @@ import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.NodeProxy;
 import org.exist.storage.txn.Txn;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.gml2.GMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public abstract class AbstractSpatialStore {
 
     public void addGeometry(Txn txn, NodeProxy node, String gmlString) {
         try {
-            Geometry geometry = gmlReader.read(gmlString);
+            Geometry geometry = gmlReader.read(gmlString, new GeometryFactory());
             if (geometry != null) {
                 // Utilisation de toString() car getCoordinate() n'existe plus
                 String nodeId = node.getNodeId().toString();
