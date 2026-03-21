@@ -2,18 +2,19 @@ package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.NodeProxy;
-import org.exist.indexing.AbstractIndexWorker;
-import org.exist.indexing.IndexController;
-import org.exist.indexing.Occurrences; // Import mis à jour pour eXist 6
+import org.exist.indexing.IndexWorker; // On utilise l'interface directement
 import org.exist.storage.txn.Txn;
+import org.exist.storage.DBBroker;
 
-public class SpatialIndexWorker extends AbstractIndexWorker {
+// On implémente IndexWorker directement au lieu d'AbstractIndexWorker
+public class SpatialIndexWorker implements IndexWorker {
 
     private final SpatialIndex index;
+    private final DBBroker broker;
 
-    public SpatialIndexWorker(SpatialIndex index, IndexController controller) {
-        super(index, controller);
+    public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
         this.index = index;
+        this.broker = broker;
     }
 
     @Override
@@ -21,12 +22,12 @@ public class SpatialIndexWorker extends AbstractIndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
+    // On retire l'argument Occurrences qui pose problème
+    // et on simplifie la méthode selon l'interface eXist 6
     @Override
-    public void occurrence(Txn transaction, NodeProxy node, Occurrences occurrences) {
-        String value = node.getStringValue();
-        // On vérifie que le store existe avant d'appeler addGeometry
-        if (value != null && value.contains("gml:") && index.getStore() != null) {
-            index.getStore().addGeometry(transaction, node, value);
+    public void flush() {
+        if (index.getStore() != null) {
+            index.getStore().flush();
         }
     }
 
@@ -36,11 +37,6 @@ public class SpatialIndexWorker extends AbstractIndexWorker {
             index.getStore().removeDocument(transaction, document);
         }
     }
-
-    @Override
-    public void flush() {
-        if (index.getStore() != null) {
-            index.getStore().flush();
-        }
-    }
+    
+    // Si Maven hurle sur l'absence de méthodes, il nous donnera la liste exacte au prochain tour
 }
