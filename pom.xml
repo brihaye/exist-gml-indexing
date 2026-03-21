@@ -27,7 +27,6 @@
             <groupId>org.exist-db</groupId>
             <artifactId>exist-core</artifactId>
             <version>${exist.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.locationtech.jts</groupId>
