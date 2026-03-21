@@ -4,6 +4,8 @@ import org.exist.dom.persistent.DocumentImpl;
 import org.exist.indexing.IndexWorker;
 import org.exist.storage.DBBroker;
 import org.exist.storage.txn.Txn;
+import org.exist.xquery.XQueryContext; // Nouvel import
+import org.exist.xquery.functions.indexing.QueryRewriter; // Nouvel import
 
 public class SpatialIndexWorker implements IndexWorker {
 
@@ -21,12 +23,19 @@ public class SpatialIndexWorker implements IndexWorker {
     }
 
     @Override
+    public QueryRewriter getQueryRewriter(XQueryContext context) {
+        // eXist 6 demande cette méthode. On renvoie null (pas d'optimisation spécifique).
+        return null;
+    }
+
+    @Override
     public void flush() {
         if (index.getStore() != null) {
             index.getStore().flush();
         }
     }
 
+    // Maven râlait sur l'override ici, on s'assure que la signature est la bonne
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null) {
