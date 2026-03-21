@@ -49,7 +49,6 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Pas d'action spécifique
     }
 
     @Override
@@ -62,13 +61,12 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // SIGNATURE EXACTE POUR EXIST 6.2.0
-    // Le <T extends IStoredNode<T>> est la clé du verrou.
+    // ON FORCE LA SIGNATURE LA PLUS SIMPLE SANS BORNES (RAW)
+    // C'est souvent la seule façon de passer le Type Erasure sur eXist 6
     @Override
-    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
-        // Ta logique de 2007 (ancêtre GML) reviendra ici plus tard.
-        // Pour l'instant, on cherche le BUILD SUCCESS.
-        return node; 
+    @SuppressWarnings("unchecked")
+    public IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
+        return node;
     }
 
     @Override
