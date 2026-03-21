@@ -21,6 +21,7 @@ public class SpatialIndexWorker implements IndexWorker {
 
     private final SpatialIndex index;
     private final DBBroker broker;
+    private StreamListener.ReindexMode mode = StreamListener.ReindexMode.STREAMS;
 
     public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
         this.index = index;
@@ -32,10 +33,15 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // Voici la signature réclamée par le compilateur
+    // LE DUO GAGNANT : getMode et setMode utilisent le même type interne
+    @Override
+    public StreamListener.ReindexMode getMode() {
+        return mode;
+    }
+
     @Override
     public void setMode(StreamListener.ReindexMode mode) {
-        // Logique de changement de mode si nécessaire
+        this.mode = mode;
     }
 
     @Override
@@ -85,12 +91,11 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // On change la signature pour tenter de satisfaire l'override
-    // Dans beaucoup de versions récentes, remove ne prend que le document
+    // SIGNATURE FINALE : On remet le Txn, c'est l'override le plus probable
     @Override
-    public void remove(DocumentImpl document) {
+    public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
-            index.getStore().removeDocument(null, document);
+            index.getStore().removeDocument(transaction, document);
         }
     }
 }
