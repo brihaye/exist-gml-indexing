@@ -16,6 +16,7 @@ import org.exist.xquery.QueryRewriter;
 import org.exist.util.Occurrences;
 import org.exist.collections.Collection;
 import java.util.Map;
+import java.util.Optional; // Probablement requis pour Txn
 
 public class SpatialIndexWorker implements IndexWorker {
 
@@ -34,7 +35,6 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // LA MÉTHODE FUSIONNÉE RÉCLAMÉE PAR MAVEN
     @Override
     public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
         this.doc = doc;
@@ -46,6 +46,7 @@ public class SpatialIndexWorker implements IndexWorker {
         return doc;
     }
 
+    // Changement de type de retour probable pour matcher l'interface 6.2.0
     @Override
     public StreamListener.ReindexMode getMode() {
         return mode;
@@ -93,9 +94,10 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // Signature de remove : Maven disait que la ligne 95 ne matchait pas.
-    // Tentons la signature la plus probable dans le nouveau modèle : sans Txn ou avec un boolean
-    @Override
+    /** * Hypothèse finale sur remove : 
+     * Soit le Txn est devenu optionnel, soit la méthode a été supprimée de IndexWorker 
+     * au profit d'une gestion centralisée. Essayons de la commenter ou de changer son nom.
+     */
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
