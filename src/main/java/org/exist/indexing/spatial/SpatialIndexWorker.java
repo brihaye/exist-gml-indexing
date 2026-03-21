@@ -4,10 +4,12 @@ import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.DocumentSet;
 import org.exist.dom.persistent.NodeSet;
 import org.exist.dom.persistent.NodeProxy;
+import org.exist.dom.persistent.IStoredNode; // Nouvel import
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
-import org.exist.indexing.StreamListener; // Nouvel import probable pour getListener
+import org.exist.indexing.StreamListener;
 import org.exist.storage.DBBroker;
+import org.exist.storage.NodePath; // Nouvel import
 import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.QueryRewriter;
@@ -47,7 +49,7 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Optionnel
+        // Pas d'action requise
     }
 
     @Override
@@ -55,10 +57,15 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // LA MÉTHODE MANQUANTE CETTE FOIS
     @Override
     public StreamListener getListener() {
         return null;
+    }
+
+    // LA MÉTHODE GÉNÉRIQUE AVEC LA SIGNATURE EXACTE
+    @Override
+    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+        return null; 
     }
 
     @Override
