@@ -4,12 +4,12 @@ import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.DocumentSet;
 import org.exist.dom.persistent.NodeSet;
 import org.exist.dom.persistent.NodeProxy;
-import org.exist.dom.persistent.IStoredNode; // Nouvel import
+import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
 import org.exist.storage.DBBroker;
-import org.exist.storage.NodePath; // Nouvel import
+import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.QueryRewriter;
@@ -49,7 +49,7 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Pas d'action requise
+        // Optionnel
     }
 
     @Override
@@ -62,10 +62,10 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // LA MÉTHODE GÉNÉRIQUE AVEC LA SIGNATURE EXACTE
+    // SIGNATURE CORRIGÉE : Utilisation du wildcard pour éviter les conflits de bornes (bounds)
     @Override
-    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
-        return null; 
+    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+        return null;
     }
 
     @Override
