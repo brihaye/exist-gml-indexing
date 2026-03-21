@@ -8,6 +8,7 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
+import org.exist.storage.IndexMode; // L'emplacement probable dans eXist 6.x
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -32,9 +33,10 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // Si getMode() est demandé mais IndexMode est introuvable, 
-    // essayons sans l'import ou avec le type int par défaut si c'est une vieille interface.
-    // Mais ici, l'erreur disait qu'il manquait getDocument() !
+    @Override
+    public IndexMode getMode() {
+        return IndexMode.STREAMS;
+    }
 
     @Override
     public DocumentImpl getDocument() {
@@ -83,10 +85,10 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // Tentative de signature alternative pour remove si la précédente échoue
+    // Si ça râle encore ici, on testera la signature sans Txn au prochain coup
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
-        if (index.getStore() != null) {
+        if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
         }
     }
