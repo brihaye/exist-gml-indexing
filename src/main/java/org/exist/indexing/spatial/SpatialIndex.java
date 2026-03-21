@@ -10,13 +10,15 @@ public class SpatialIndex extends AbstractIndex {
     // On utilise AbstractSpatialStore comme base commune
     private AbstractSpatialStore store;
 
-    @Override
-    public void configure(IndexController controller, Map<String, String> params) {
-        super.configure(controller, params);
-        // Initialisation du store (exemple avec le BBox Store)
-        ProjectionService projectionService = new ProjectionService();
-        this.store = new BBoxOrientedSQLStore(projectionService);
-    }
+	@Override
+	public void configure(org.exist.storage.BrokerPool pool, java.nio.file.Path path, org.w3c.dom.Element config) {
+	    // On laisse vide pour l'instant pour tester la compilation
+	}
+	
+	@Override
+	public void checkIndex(org.exist.storage.DBBroker broker) {
+	    // Cette méthode est devenue obligatoire (abstract)
+	}
 
     @Override
     public IndexWorker getWorker(IndexController controller) {
