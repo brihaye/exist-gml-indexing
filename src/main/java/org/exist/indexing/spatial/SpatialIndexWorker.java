@@ -1,8 +1,8 @@
 package org.exist.indexing.spatial;
 
-import org.exist.indexing.AbstractIndexWorker;
+import org.exist.indexing.AbstractIndexWorker; // C'EST LUI QUI MANQUE !
+import org.exist.indexing.Index;
 import org.exist.indexing.StreamListener;
-import org.exist.dom.persistent.DocumentImpl;
 import org.exist.storage.DBBroker;
 
 public class SpatialIndexWorker extends AbstractIndexWorker {
