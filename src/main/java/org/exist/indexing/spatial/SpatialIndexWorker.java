@@ -5,7 +5,8 @@ import org.exist.dom.persistent.DocumentSet;
 import org.exist.dom.persistent.NodeSet;
 import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.IndexWorker;
-import org.exist.indexing.MatchListener; // Nouvel import requis
+import org.exist.indexing.MatchListener;
+import org.exist.indexing.StreamListener; // Nouvel import probable pour getListener
 import org.exist.storage.DBBroker;
 import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
@@ -46,13 +47,18 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Pas d'action spécifique requise pour la compilation
+        // Optionnel
     }
 
-    // LA MÉTHODE QUI MANQUAIT
     @Override
     public MatchListener getMatchListener(DBBroker broker, NodeProxy node) {
-        return null; // On renvoie null car on ne gère pas le surlignage de texte/match ici
+        return null;
+    }
+
+    // LA MÉTHODE MANQUANTE CETTE FOIS
+    @Override
+    public StreamListener getListener() {
+        return null;
     }
 
     @Override
