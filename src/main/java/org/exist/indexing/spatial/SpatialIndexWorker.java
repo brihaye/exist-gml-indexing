@@ -3,11 +3,12 @@ package org.exist.indexing.spatial;
 import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.DocumentSet;
 import org.exist.dom.persistent.NodeSet;
-import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.IndexWorker;
 import org.exist.storage.DBBroker;
 import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
+import org.exist.xquery.QueryRewriter;
+import org.exist.util.Occurrences;
 import java.util.Map;
 
 public class SpatialIndexWorker implements IndexWorker {
@@ -26,14 +27,13 @@ public class SpatialIndexWorker implements IndexWorker {
     }
 
     @Override
-    public Object getQueryRewriter(XQueryContext context) {
-        // En renvoyant Object, on évite l'erreur d'import de QueryRewriter
-        return null;
+    public QueryRewriter getQueryRewriter(XQueryContext context) {
+        return null; // Signature acceptée car QueryRewriter est importé
     }
 
     @Override
-    public void scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
-        // Obligatoire en eXist 6, peut rester vide pour l'instant
+    public Occurrences[] scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
+        return null; // Doit retourner un tableau d'Occurrences (org.exist.util)
     }
 
     @Override
