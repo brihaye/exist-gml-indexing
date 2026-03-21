@@ -8,6 +8,7 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
+import org.exist.indexing.IndexMode; // Nouvel import
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -30,6 +31,12 @@ public class SpatialIndexWorker implements IndexWorker {
     @Override
     public String getIndexId() {
         return "http://exist-db.org/indexing/spatial";
+    }
+
+    @Override
+    public IndexMode getMode() {
+        // Mode par défaut pour les index personnalisés
+        return IndexMode.STREAMS; 
     }
 
     @Override
@@ -61,10 +68,8 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // ON FORCE LA SIGNATURE LA PLUS SIMPLE SANS BORNES (RAW)
-    // C'est souvent la seule façon de passer le Type Erasure sur eXist 6
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return node;
     }
@@ -76,6 +81,7 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
+    // On s'assure que la signature match exactement l'interface
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null) {
