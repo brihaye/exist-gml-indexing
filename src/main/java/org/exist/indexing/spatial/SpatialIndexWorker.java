@@ -8,7 +8,7 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
-import org.exist.indexing.StreamListener.ReindexMode; // Import direct
+import org.exist.indexing.StreamListener.ReindexMode;
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -35,25 +35,25 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
+    // Version à un seul argument demandée par ton compilateur
+    @Override
+    public void setDocument(DocumentImpl doc) {
+        this.doc = doc;
+    }
+
     @Override
     public void setMode(ReindexMode mode) {
         this.mode = mode;
     }
 
     @Override
-    public ReindexMode getMode() {
-        return mode;
-    }
-
-    @Override
-    public void setDocument(DocumentImpl doc, ReindexMode mode) {
-        this.doc = doc;
-        this.mode = mode;
-    }
-
-    @Override
     public DocumentImpl getDocument() {
         return doc;
+    }
+
+    @Override
+    public ReindexMode getMode() {
+        return mode;
     }
 
     @Override
@@ -98,7 +98,8 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // On garde remove sans @Override pour l'instant pour éviter les bruits
+    // On retire le @Override ici pour être sûr que ça ne bloque pas le build 
+    // si l'interface a déplacé cette méthode ailleurs
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
