@@ -2,6 +2,9 @@ package org.exist.indexing.spatial;
 
 import org.exist.indexing.StreamListener;
 import org.exist.dom.persistent.DocumentImpl;
+import org.exist.dom.persistent.ElementImpl;
+import org.exist.storage.txn.Txn;
+import org.exist.util.NodePath;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.gml2.GMLReader;
