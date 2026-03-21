@@ -9,15 +9,14 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17  # <--- On passe à 17 ici
-      uses: uses: actions/setup-java@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4  # <-- Corrigé ici (un seul 'uses:')
       with:
-        java-version: '17' # <--- Et ici
+        java-version: '17'
         distribution: 'temurin'
         cache: maven
 
     - name: Run Tests
-      # On garde ton flag ignore=true pour voir les erreurs spatiales dans le résumé
       run: mvn test -Dmaven.test.failure.ignore=true
 
     - name: Upload Test Results
@@ -33,7 +32,7 @@ jobs:
         echo "### 🚩 Spatial Index Test Results" >> $GITHUB_STEP_SUMMARY
         if [ -d "target/surefire-reports" ]; then
           echo "#### Detailed Failures:" >> $GITHUB_STEP_SUMMARY
-          grep -h "ERROR\|FAILURE" target/surefire-reports/*.txt >> $GITHUB_STEP_SUMMARY || echo "✅ All tests passed (or no detailed errors found)." >> $GITHUB_STEP_SUMMARY
+          grep -h "ERROR\|FAILURE" target/surefire-reports/*.txt >> $GITHUB_STEP_SUMMARY || echo "✅ All tests passed." >> $GITHUB_STEP_SUMMARY
         else
-          echo "❌ Critical: Compilation failed or target/surefire-reports is missing!" >> $GITHUB_STEP_SUMMARY
+          echo "❌ Critical: Compilation failed!" >> $GITHUB_STEP_SUMMARY
         fi
