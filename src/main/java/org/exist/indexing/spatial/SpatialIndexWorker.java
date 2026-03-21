@@ -1,11 +1,14 @@
 package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
+import org.exist.dom.persistent.DocumentSet;
+import org.exist.dom.persistent.NodeSet;
+import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.IndexWorker;
 import org.exist.storage.DBBroker;
 import org.exist.storage.txn.Txn;
-import org.exist.xquery.XQueryContext; // Nouvel import
-import org.exist.xquery.functions.indexing.QueryRewriter; // Nouvel import
+import org.exist.xquery.XQueryContext;
+import java.util.Map;
 
 public class SpatialIndexWorker implements IndexWorker {
 
@@ -23,9 +26,14 @@ public class SpatialIndexWorker implements IndexWorker {
     }
 
     @Override
-    public QueryRewriter getQueryRewriter(XQueryContext context) {
-        // eXist 6 demande cette méthode. On renvoie null (pas d'optimisation spécifique).
+    public Object getQueryRewriter(XQueryContext context) {
+        // En renvoyant Object, on évite l'erreur d'import de QueryRewriter
         return null;
+    }
+
+    @Override
+    public void scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
+        // Obligatoire en eXist 6, peut rester vide pour l'instant
     }
 
     @Override
@@ -35,7 +43,6 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // Maven râlait sur l'override ici, on s'assure que la signature est la bonne
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null) {
