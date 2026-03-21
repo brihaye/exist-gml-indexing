@@ -9,6 +9,7 @@ import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.QueryRewriter;
 import org.exist.util.Occurrences;
+import org.exist.collections.Collection; // Nouvel import pour removeCollection
 import java.util.Map;
 
 public class SpatialIndexWorker implements IndexWorker {
@@ -26,7 +27,6 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // NOUVELLE MÉTHODE RÉCLAMÉE PAR MAVEN
     @Override
     public boolean checkIndex(DBBroker broker) {
         return true;
@@ -40,6 +40,12 @@ public class SpatialIndexWorker implements IndexWorker {
     @Override
     public Occurrences[] scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
         return null;
+    }
+
+    // LA MÉTHODE MANQUANTE
+    @Override
+    public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
+        // Logique optionnelle de nettoyage de collection
     }
 
     @Override
