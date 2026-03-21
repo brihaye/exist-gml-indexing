@@ -2,10 +2,9 @@ package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.NodeProxy;
-import org.exist.indexing.AbstractIndexWorker;
-import org.exist.indexing.IndexController;
-import org.exist.indexing.Occurrences; // <--- C'est ici ! (Pas org.exist.xquery)
+import org.exist.indexing.*;        // L'étoile importe TOUT ce qui est dans indexing
 import org.exist.storage.txn.Txn;
+import org.exist.xquery.*;         // Au cas où Occurrences s'y cache encore
 
 public class SpatialIndexWorker extends AbstractIndexWorker {
 
