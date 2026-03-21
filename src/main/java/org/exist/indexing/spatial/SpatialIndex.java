@@ -22,7 +22,13 @@ public class SpatialIndex extends AbstractIndex {
         return true; 
     }
 
-    // LA SIGNATURE QUE MAVEN RÉCLAME : DBBroker au lieu de IndexController
+    @Override
+    public void sync() {
+        if (store != null) {
+            store.flush();
+        }
+    }
+
     @Override
     public IndexWorker getWorker(DBBroker broker) {
         return new SpatialIndexWorker(this, broker);
@@ -32,8 +38,8 @@ public class SpatialIndex extends AbstractIndex {
         return this.store;
     }
 
-	@Override
-    public void remove() {
+    @Override
+    public void close() {
         if (store != null) {
             try {
                 store.shutdown();
@@ -42,11 +48,15 @@ public class SpatialIndex extends AbstractIndex {
             }
         }
     }
-	
-	@Override
-    public void close() {
+
+    @Override
+    public void remove() {
         if (store != null) {
-            store.flush();
+            try {
+                store.shutdown();
+            } catch (Exception e) {
+                // log error
+            }
         }
     }
 }
