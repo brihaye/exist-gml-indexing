@@ -21,6 +21,9 @@ public class SpatialIndex {
         this.store.init(params);
     }
 
+    public AbstractSpatialStore getStore() {
+        return this.store; // ou le nom de ta variable interne
+    }
     /**
      * Méthode appelée par eXist lors du passage sur un nœud GML
      */
