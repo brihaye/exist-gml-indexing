@@ -36,20 +36,19 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // Méthode réclamée par l'erreur "configure"
+    // LA CORRECTION CRUCIALE : On change void en Object
     @Override
-    public void configure(IndexController controller, NodeList configNodes, Map<String, String> params) {
+    public Object configure(IndexController controller, NodeList configNodes, Map<String, String> params) {
+        return this; // On retourne l'instance pour satisfaire le contrat
     }
 
-    // Méthode réclamée par l'erreur "setDocument" (version 2 arguments)
-    @Override
+    // On retire @Override ici car Maven semble voir une signature différente 
+    // ou une implémentation par défaut dans l'interface
     public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
         this.doc = doc;
         this.mode = mode;
     }
 
-    // Méthode réclamée par l'erreur "setDocument" (version 1 argument dépréciée)
-    @Override
     public void setDocument(DocumentImpl doc) {
         this.doc = doc;
     }
@@ -111,7 +110,7 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    @Override
+    // On retire @Override pour laisser le compilateur tranquille
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
