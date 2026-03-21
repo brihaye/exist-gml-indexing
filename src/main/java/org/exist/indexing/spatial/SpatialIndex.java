@@ -12,7 +12,7 @@ public class SpatialIndex extends AbstractIndex {
 
 	@Override
 	public void configure(org.exist.storage.BrokerPool pool, java.nio.file.Path path, org.w3c.dom.Element config) {
-	    // On laisse vide pour l'instant pour tester la compilation
+    	// Ne rien mettre dedans pour l'instant, juste pour que ça compile !
 	}
 	
 	@Override
