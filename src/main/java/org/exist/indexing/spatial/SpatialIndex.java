@@ -2,6 +2,7 @@ package org.exist.indexing.spatial;
 
 import org.exist.indexing.AbstractIndex;
 import org.exist.indexing.IndexWorker;
+import org.exist.indexing.IndexController;
 import org.exist.storage.DBBroker;
 import org.exist.storage.BrokerPool;
 import java.nio.file.Path;
@@ -15,6 +16,11 @@ public class SpatialIndex extends AbstractIndex {
     public void configure(BrokerPool pool, Path path, Element config) {
         ProjectionService projectionService = new ProjectionService();
         this.store = new BBoxOrientedSQLStore(projectionService);
+    }
+
+    @Override
+    public void open() {
+        // eXist 6 réclame cette méthode pour ouvrir l'index
     }
 
     @Override
