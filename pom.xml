@@ -53,6 +53,20 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
             </plugin>
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <version>3.6.0</version>
+             <executions>
+                 <execution>
+                     <id>list-dependencies</id>
+                     <phase>compile</phase>
+                     <goals>
+                         <goal>tree</goal>
+                     </goals>
+                 </execution>
+             </executions>
+         </plugin>        
         </plugins>
     </build>
 </project>
