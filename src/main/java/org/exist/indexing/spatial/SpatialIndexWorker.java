@@ -49,7 +49,6 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Pas d'action requise
     }
 
     @Override
@@ -62,9 +61,9 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // SIGNATURE SELON SOURCE EXIST 6.x : Pas de <T> sur IStoredNode !
+    // ON UTILISE LE WILDCARD <?> POUR CORRESPONDRE À L'ERASURE DU JAR
     @Override
-    public <T> IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
