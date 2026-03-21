@@ -49,7 +49,6 @@ public class SpatialIndexWorker implements IndexWorker {
 
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Pas d'action requise
     }
 
     @Override
@@ -62,10 +61,9 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // SIGNATURE SANS CONTRAINTES T : C'est la solution pour éviter le "name clash"
-    // si l'interface parente utilise un type brut ou une borne différente.
+    // VERSION WILDCARD : On retire le <T> explicite pour coller à l'effacement de type (erasure)
     @Override
-    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    public <T> IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
