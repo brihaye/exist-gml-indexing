@@ -29,10 +29,14 @@ public abstract class AbstractSpatialStore {
         }
     }
 
+    // Ajout de cette méthode pour le Worker
+    public void removeDocument(Txn txn, DocumentImpl doc) {
+        removeFromPersistentStore(txn, doc);
+    }
+
     public abstract void flush();
     public abstract void shutdown() throws Exception;
 
-    // Ces deux-là doivent être implémentées dans BBoxOrientedSQLStore
     protected abstract void saveToPersistentStore(Txn txn, String nodeId, Geometry geom);
     protected abstract void removeFromPersistentStore(Txn txn, DocumentImpl doc);
 }
