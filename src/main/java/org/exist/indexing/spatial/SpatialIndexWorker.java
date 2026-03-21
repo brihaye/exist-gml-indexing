@@ -8,7 +8,6 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
-import org.exist.indexing.StreamListener.ReindexMode;
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -23,7 +22,7 @@ public class SpatialIndexWorker implements IndexWorker {
     private final SpatialIndex index;
     private final DBBroker broker;
     private DocumentImpl doc;
-    private ReindexMode mode;
+    private org.exist.indexing.StreamListener.ReindexMode mode;
 
     public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
         this.index = index;
@@ -35,25 +34,27 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // Version à un seul argument demandée par ton compilateur
+    // ON UTILISE LE NOM COMPLET POUR FORCER LE COMPILATEUR
     @Override
-    public void setDocument(DocumentImpl doc) {
+    public void setDocument(org.exist.dom.persistent.DocumentImpl doc, org.exist.indexing.StreamListener.ReindexMode mode) {
         this.doc = doc;
-    }
-
-    @Override
-    public void setMode(ReindexMode mode) {
         this.mode = mode;
     }
 
     @Override
-    public DocumentImpl getDocument() {
-        return doc;
+    public org.exist.indexing.StreamListener.ReindexMode getMode() {
+        return mode;
     }
 
     @Override
-    public ReindexMode getMode() {
-        return mode;
+    public org.exist.dom.persistent.DocumentImpl getDocument() {
+        return doc;
+    }
+
+    // eXist 6.2.0 demande souvent setMode séparément aussi
+    @Override
+    public void setMode(org.exist.indexing.StreamListener.ReindexMode mode) {
+        this.mode = mode;
     }
 
     @Override
@@ -98,8 +99,7 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // On retire le @Override ici pour être sûr que ça ne bloque pas le build 
-    // si l'interface a déplacé cette méthode ailleurs
+    @Override
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
