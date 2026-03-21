@@ -8,6 +8,7 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
+import org.exist.indexing.StreamListener.ReindexMode; // Import direct
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -16,14 +17,13 @@ import org.exist.xquery.QueryRewriter;
 import org.exist.util.Occurrences;
 import org.exist.collections.Collection;
 import java.util.Map;
-import java.util.Optional; // Probablement requis pour Txn
 
 public class SpatialIndexWorker implements IndexWorker {
 
     private final SpatialIndex index;
     private final DBBroker broker;
     private DocumentImpl doc;
-    private StreamListener.ReindexMode mode;
+    private ReindexMode mode;
 
     public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
         this.index = index;
@@ -36,7 +36,17 @@ public class SpatialIndexWorker implements IndexWorker {
     }
 
     @Override
-    public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
+    public void setMode(ReindexMode mode) {
+        this.mode = mode;
+    }
+
+    @Override
+    public ReindexMode getMode() {
+        return mode;
+    }
+
+    @Override
+    public void setDocument(DocumentImpl doc, ReindexMode mode) {
         this.doc = doc;
         this.mode = mode;
     }
@@ -44,12 +54,6 @@ public class SpatialIndexWorker implements IndexWorker {
     @Override
     public DocumentImpl getDocument() {
         return doc;
-    }
-
-    // Changement de type de retour probable pour matcher l'interface 6.2.0
-    @Override
-    public StreamListener.ReindexMode getMode() {
-        return mode;
     }
 
     @Override
@@ -94,10 +98,7 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    /** * Hypothèse finale sur remove : 
-     * Soit le Txn est devenu optionnel, soit la méthode a été supprimée de IndexWorker 
-     * au profit d'une gestion centralisée. Essayons de la commenter ou de changer son nom.
-     */
+    // On garde remove sans @Override pour l'instant pour éviter les bruits
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
