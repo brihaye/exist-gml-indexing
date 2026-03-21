@@ -37,6 +37,12 @@ public abstract class AbstractSpatialStore {
         }
     }
 
+    public void removeDocument(Txn txn, DocumentImpl document) {
+        // Cette méthode doit exister pour être appelée par le Worker
+        removeFromPersistentStore(txn, document);
+        internalCache.clear(); 
+    }
+    
     public abstract void flush();
     
     // On met à jour la signature ici aussi (String au lieu de long)
