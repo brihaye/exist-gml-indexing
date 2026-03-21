@@ -61,10 +61,14 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // SOLUTION FINALE : On utilise la borne exacte de IStoredNode
-    // Le compilateur exige que T étende lui-même IStoredNode<T>
+    /**
+     * Cette signature utilise des types bruts (Raw Types) pour IStoredNode.
+     * C'est le dernier recours quand les bornes de T sont incohérentes entre 
+     * la compilation et l'interface binaire du JAR.
+     */
     @Override
-    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    @SuppressWarnings("rawtypes")
+    public <T> IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
