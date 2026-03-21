@@ -3,29 +3,34 @@ package org.exist.indexing.spatial;
 import org.exist.indexing.AbstractIndex;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.IndexController;
+import org.exist.storage.DBBroker;
+import org.exist.storage.BrokerPool;
+import java.nio.file.Path;
+import org.w3c.dom.Element;
 import java.util.Map;
 
 public class SpatialIndex extends AbstractIndex {
 
-    // On utilise AbstractSpatialStore comme base commune
     private AbstractSpatialStore store;
 
-	@Override
-	public void configure(org.exist.storage.BrokerPool pool, java.nio.file.Path path, org.w3c.dom.Element config) {
-    	// Ne rien mettre dedans pour l'instant, juste pour que ça compile !
-	}
-	
-	@Override
-	public void checkIndex(org.exist.storage.DBBroker broker) {
-	    // Cette méthode est devenue obligatoire (abstract)
-	}
+    @Override
+    public void configure(BrokerPool pool, Path path, Element config) {
+        // Signature eXist 6 respectée
+        ProjectionService projectionService = new ProjectionService();
+        this.store = new BBoxOrientedSQLStore(projectionService);
+    }
+
+    @Override
+    public boolean checkIndex(DBBroker broker) {
+        // Doit renvoyer boolean pour eXist 6
+        return true; 
+    }
 
     @Override
     public IndexWorker getWorker(IndexController controller) {
         return new SpatialIndexWorker(this, controller);
     }
 
-    // UNE SEULE FOIS cette méthode pour que le Worker puisse y accéder
     public AbstractSpatialStore getStore() {
         return this.store;
     }
