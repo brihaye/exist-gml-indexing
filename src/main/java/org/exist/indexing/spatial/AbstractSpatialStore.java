@@ -29,7 +29,6 @@ public abstract class AbstractSpatialStore {
         }
     }
 
-    // Ajout de cette méthode pour le Worker
     public void removeDocument(Txn txn, DocumentImpl doc) {
         removeFromPersistentStore(txn, doc);
     }
