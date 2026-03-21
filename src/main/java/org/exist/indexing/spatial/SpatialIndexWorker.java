@@ -36,21 +36,15 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // LA CORRECTION CRUCIALE : On change void en Object
+    // LA TOUTE DERNIÈRE MÉTHODE MANQUANTE
+    @Override
+    public String getIndexName() {
+        return "spatial-index";
+    }
+
     @Override
     public Object configure(IndexController controller, NodeList configNodes, Map<String, String> params) {
-        return this; // On retourne l'instance pour satisfaire le contrat
-    }
-
-    // On retire @Override ici car Maven semble voir une signature différente 
-    // ou une implémentation par défaut dans l'interface
-    public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
-        this.doc = doc;
-        this.mode = mode;
-    }
-
-    public void setDocument(DocumentImpl doc) {
-        this.doc = doc;
+        return this;
     }
 
     @Override
@@ -110,7 +104,16 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // On retire @Override pour laisser le compilateur tranquille
+    // Signatures sans @Override pour éviter les conflits de version sur les paramètres
+    public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
+        this.doc = doc;
+        this.mode = mode;
+    }
+
+    public void setDocument(DocumentImpl doc) {
+        this.doc = doc;
+    }
+
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
             index.getStore().removeDocument(transaction, document);
