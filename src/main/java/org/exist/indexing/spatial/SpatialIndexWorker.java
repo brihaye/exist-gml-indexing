@@ -3,13 +3,15 @@ package org.exist.indexing.spatial;
 import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.DocumentSet;
 import org.exist.dom.persistent.NodeSet;
+import org.exist.dom.persistent.NodeProxy;
 import org.exist.indexing.IndexWorker;
+import org.exist.indexing.MatchListener; // Nouvel import requis
 import org.exist.storage.DBBroker;
 import org.exist.storage.txn.Txn;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.QueryRewriter;
 import org.exist.util.Occurrences;
-import org.exist.collections.Collection; // Nouvel import pour removeCollection
+import org.exist.collections.Collection;
 import java.util.Map;
 
 public class SpatialIndexWorker implements IndexWorker {
@@ -42,10 +44,15 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // LA MÉTHODE MANQUANTE
     @Override
     public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-        // Logique optionnelle de nettoyage de collection
+        // Pas d'action spécifique requise pour la compilation
+    }
+
+    // LA MÉTHODE QUI MANQUAIT
+    @Override
+    public MatchListener getMatchListener(DBBroker broker, NodeProxy node) {
+        return null; // On renvoie null car on ne gère pas le surlignage de texte/match ici
     }
 
     @Override
