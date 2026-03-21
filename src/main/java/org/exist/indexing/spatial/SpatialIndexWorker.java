@@ -61,9 +61,10 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // ON UTILISE LE WILDCARD <?> POUR CORRESPONDRE À L'ERASURE DU JAR
+    // SOLUTION FINALE : On utilise la borne exacte de IStoredNode
+    // Le compilateur exige que T étende lui-même IStoredNode<T>
     @Override
-    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
