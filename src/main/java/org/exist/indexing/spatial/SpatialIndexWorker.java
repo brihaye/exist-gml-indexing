@@ -1,12 +1,10 @@
 package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
-import org.exist.dom.persistent.NodeProxy;
-import org.exist.indexing.IndexWorker; // On utilise l'interface directement
-import org.exist.storage.txn.Txn;
+import org.exist.indexing.IndexWorker;
 import org.exist.storage.DBBroker;
+import org.exist.storage.txn.Txn;
 
-// On implémente IndexWorker directement au lieu d'AbstractIndexWorker
 public class SpatialIndexWorker implements IndexWorker {
 
     private final SpatialIndex index;
@@ -22,8 +20,6 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // On retire l'argument Occurrences qui pose problème
-    // et on simplifie la méthode selon l'interface eXist 6
     @Override
     public void flush() {
         if (index.getStore() != null) {
@@ -37,6 +33,4 @@ public class SpatialIndexWorker implements IndexWorker {
             index.getStore().removeDocument(transaction, document);
         }
     }
-    
-    // Si Maven hurle sur l'absence de méthodes, il nous donnera la liste exacte au prochain tour
 }
