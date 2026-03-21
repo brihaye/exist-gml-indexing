@@ -2,67 +2,30 @@ package org.exist.indexing.spatial;
 
 import org.exist.indexing.AbstractIndex;
 import org.exist.indexing.IndexWorker;
-import org.exist.indexing.IndexController;
 import org.exist.storage.DBBroker;
-import org.exist.storage.BrokerPool;
-import java.nio.file.Path;
-import org.w3c.dom.Element;
+import java.util.Map;
 
 public class SpatialIndex extends AbstractIndex {
-
-    private AbstractSpatialStore store;
-
-    @Override
-    public void configure(BrokerPool pool, Path path, Element config) {
-        ProjectionService projectionService = new ProjectionService();
-        this.store = new BBoxOrientedSQLStore(projectionService);
-    }
+    private SpatialStorageEngine storage;
 
     @Override
-    public void open() {
-        // eXist 6 réclame cette méthode pour ouvrir l'index
-    }
-
-    @Override
-    public boolean checkIndex(DBBroker broker) {
-        return true; 
-    }
-
-    @Override
-    public void sync() {
-        if (store != null) {
-            store.flush();
-        }
+    public void configure(org.exist.indexing.IndexController controller, org.w3c.dom.NodeList configNodes, Map<String, String> params) {
+        try {
+            // Agnosticisme : on crée le moteur défini en config
+            this.storage = SpatialStoreFactory.createInternal(params);
+        } catch (Exception e) { /* Critical log */ }
     }
 
     @Override
     public IndexWorker getWorker(DBBroker broker) {
-        return new SpatialIndexWorker(this, broker);
-    }
-
-    public AbstractSpatialStore getStore() {
-        return this.store;
+        return new SpatialIndexWorker(this, storage, broker);
     }
 
     @Override
     public void close() {
-        if (store != null) {
-            try {
-                store.shutdown();
-            } catch (Exception e) {
-                // log error
-            }
-        }
+        try { storage.shutdown(); } catch (Exception e) {}
     }
 
     @Override
-    public void remove() {
-        if (store != null) {
-            try {
-                store.shutdown();
-            } catch (Exception e) {
-                // log error
-            }
-        }
-    }
+    public String getIndexId() { return "http://exist-db.org/indexing/spatial"; }
 }
