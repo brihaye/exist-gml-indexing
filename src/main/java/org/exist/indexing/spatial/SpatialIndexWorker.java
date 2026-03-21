@@ -26,14 +26,20 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
+    // NOUVELLE MÉTHODE RÉCLAMÉE PAR MAVEN
+    @Override
+    public boolean checkIndex(DBBroker broker) {
+        return true;
+    }
+
     @Override
     public QueryRewriter getQueryRewriter(XQueryContext context) {
-        return null; // Signature acceptée car QueryRewriter est importé
+        return null;
     }
 
     @Override
     public Occurrences[] scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
-        return null; // Doit retourner un tableau d'Occurrences (org.exist.util)
+        return null;
     }
 
     @Override
