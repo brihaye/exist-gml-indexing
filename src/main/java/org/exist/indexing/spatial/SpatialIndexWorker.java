@@ -2,9 +2,10 @@ package org.exist.indexing.spatial;
 
 import org.exist.dom.persistent.DocumentImpl;
 import org.exist.dom.persistent.NodeProxy;
-import org.exist.indexing.*;        // L'étoile importe TOUT ce qui est dans indexing
+import org.exist.indexing.AbstractIndexWorker;
+import org.exist.indexing.IndexController;
+import org.exist.indexing.Occurrences; // Import mis à jour pour eXist 6
 import org.exist.storage.txn.Txn;
-import org.exist.xquery.*;         // Au cas où Occurrences s'y cache encore
 
 public class SpatialIndexWorker extends AbstractIndexWorker {
 
@@ -23,14 +24,17 @@ public class SpatialIndexWorker extends AbstractIndexWorker {
     @Override
     public void occurrence(Txn transaction, NodeProxy node, Occurrences occurrences) {
         String value = node.getStringValue();
-        if (value != null && value.contains("gml:")) {
+        // On vérifie que le store existe avant d'appeler addGeometry
+        if (value != null && value.contains("gml:") && index.getStore() != null) {
             index.getStore().addGeometry(transaction, node, value);
         }
     }
 
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
-        index.getStore().removeDocument(transaction, document);
+        if (index.getStore() != null) {
+            index.getStore().removeDocument(transaction, document);
+        }
     }
 
     @Override
