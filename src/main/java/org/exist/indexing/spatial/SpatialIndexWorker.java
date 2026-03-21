@@ -61,10 +61,9 @@ public class SpatialIndexWorker implements IndexWorker {
         return null;
     }
 
-    // ON REPREND LA SIGNATURE EXACTE DU MESSAGE D'ERREUR
-    // Mais on ajoute le paramètre de type <T> pour satisfaire l'interface
+    // LA SIGNATURE RECURSIVE : On définit T comme étendant IStoredNode<T>
     @Override
-    public <T> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
+    public <T extends IStoredNode<T>> IStoredNode<T> getReindexRoot(IStoredNode<T> node, NodePath path, boolean includeChildren, boolean includeSelf) {
         return null;
     }
 
