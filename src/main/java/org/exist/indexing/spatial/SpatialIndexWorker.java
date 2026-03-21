@@ -1,122 +1,38 @@
 package org.exist.indexing.spatial;
 
-import org.exist.dom.persistent.DocumentImpl;
-import org.exist.dom.persistent.DocumentSet;
-import org.exist.dom.persistent.NodeSet;
-import org.exist.dom.persistent.NodeProxy;
-import org.exist.dom.persistent.IStoredNode;
-import org.exist.indexing.IndexWorker;
-import org.exist.indexing.IndexController;
-import org.exist.indexing.MatchListener;
+import org.exist.indexing.AbstractIndexWorker;
 import org.exist.indexing.StreamListener;
+import org.exist.dom.persistent.DocumentImpl;
 import org.exist.storage.DBBroker;
-import org.exist.storage.NodePath;
-import org.exist.storage.txn.Txn;
-import org.exist.xquery.XQueryContext;
-import org.exist.xquery.QueryRewriter;
-import org.exist.util.Occurrences;
-import org.exist.collections.Collection;
-import org.w3c.dom.NodeList;
-import java.util.Map;
 
-public class SpatialIndexWorker implements IndexWorker {
+public class SpatialIndexWorker extends AbstractIndexWorker {
+    private final SpatialStorageEngine storage;
 
-    private final SpatialIndex index;
-    private final DBBroker broker;
-    private DocumentImpl doc;
-    private StreamListener.ReindexMode mode;
-
-    public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
-        this.index = index;
-        this.broker = broker;
+    public SpatialIndexWorker(SpatialIndex index, SpatialStorageEngine storage, DBBroker broker) {
+        super(index, broker);
+        this.storage = storage;
     }
 
     @Override
-    public String getIndexId() {
-        return "http://exist-db.org/indexing/spatial";
-    }
-
-    // LA TOUTE DERNIÈRE MÉTHODE MANQUANTE
-    @Override
-    public String getIndexName() {
-        return "spatial-index";
+    public StreamListener getStreamListener() {
+        // Chaque indexation de document reçoit un nouveau Listener
+        return new SpatialStreamListener(storage, getDocument());
     }
 
     @Override
-    public Object configure(IndexController controller, NodeList configNodes, Map<String, String> params) {
-        return this;
-    }
-
-    @Override
-    public DocumentImpl getDocument() {
-        return doc;
-    }
-
-    @Override
-    public StreamListener.ReindexMode getMode() {
-        return mode;
-    }
-
-    @Override
-    public void setMode(StreamListener.ReindexMode mode) {
-        this.mode = mode;
+    public void removeDocument() {
+        try {
+            // NETTOYAGE : Invoqué par eXist lors d'une suppression de document
+            storage.deleteDocument(getDocument().getDocId());
+        } catch (Exception e) {
+            LOG.error("Sync error: SQL cleanup failed", e);
+        }
     }
 
     @Override
     public boolean checkIndex(DBBroker broker) {
-        return true;
-    }
-
-    @Override
-    public QueryRewriter getQueryRewriter(XQueryContext context) {
-        return null;
-    }
-
-    @Override
-    public Occurrences[] scanIndex(XQueryContext context, DocumentSet docs, NodeSet nodes, Map<?, ?> params) {
-        return null;
-    }
-
-    @Override
-    public void removeCollection(Collection collection, DBBroker broker, boolean delete) {
-    }
-
-    @Override
-    public MatchListener getMatchListener(DBBroker broker, NodeProxy node) {
-        return null;
-    }
-
-    @Override
-    public StreamListener getListener() {
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public IStoredNode getReindexRoot(IStoredNode node, NodePath path, boolean includeChildren, boolean includeSelf) {
-        return node;
-    }
-
-    @Override
-    public void flush() {
-        if (index.getStore() != null) {
-            index.getStore().flush();
-        }
-    }
-
-    // Signatures sans @Override pour éviter les conflits de version sur les paramètres
-    public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
-        this.doc = doc;
-        this.mode = mode;
-    }
-
-    public void setDocument(DocumentImpl doc) {
-        this.doc = doc;
-    }
-
-    public void remove(Txn transaction, DocumentImpl document) {
-        if (index.getStore() != null && document != null) {
-            index.getStore().removeDocument(transaction, document);
-        }
+        // Vérification de cohérence (Garbage Collection)
+        // [Implémentation de parcours des DOC_ID orphelins comme discuté]
+        return true; 
     }
 }
