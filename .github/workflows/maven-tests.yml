@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven (Java 17)
 
 on: [push, pull_request]
 
@@ -9,15 +9,15 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v4
+    - name: Set up JDK 17  # <--- On passe à 17 ici
+      uses: uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17' # <--- Et ici
         distribution: 'temurin'
         cache: maven
 
     - name: Run Tests
-      # On force Maven à continuer même si un test échoue pour générer le rapport
+      # On garde ton flag ignore=true pour voir les erreurs spatiales dans le résumé
       run: mvn test -Dmaven.test.failure.ignore=true
 
     - name: Upload Test Results
@@ -30,9 +30,10 @@ jobs:
     - name: Show Errors in Summary
       if: always()
       run: |
-        echo "### 🚩 Test Results Summary" >> $GITHUB_STEP_SUMMARY
-        if ls target/surefire-reports/*.txt 1> /dev/null 2>&1; then
-          grep -h "FAILURE" target/surefire-reports/*.txt >> $GITHUB_STEP_SUMMARY || echo "No failures found in text logs." >> $GITHUB_STEP_SUMMARY
+        echo "### 🚩 Spatial Index Test Results" >> $GITHUB_STEP_SUMMARY
+        if [ -d "target/surefire-reports" ]; then
+          echo "#### Detailed Failures:" >> $GITHUB_STEP_SUMMARY
+          grep -h "ERROR\|FAILURE" target/surefire-reports/*.txt >> $GITHUB_STEP_SUMMARY || echo "✅ All tests passed (or no detailed errors found)." >> $GITHUB_STEP_SUMMARY
         else
-          echo "❌ No test reports found. Compilation probably failed!" >> $GITHUB_STEP_SUMMARY
+          echo "❌ Critical: Compilation failed or target/surefire-reports is missing!" >> $GITHUB_STEP_SUMMARY
         fi
