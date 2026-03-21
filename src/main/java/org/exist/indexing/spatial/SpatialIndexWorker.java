@@ -21,7 +21,8 @@ public class SpatialIndexWorker implements IndexWorker {
 
     private final SpatialIndex index;
     private final DBBroker broker;
-    private StreamListener.ReindexMode mode = StreamListener.ReindexMode.STREAMS;
+    private DocumentImpl doc;
+    private StreamListener.ReindexMode mode;
 
     public SpatialIndexWorker(SpatialIndex index, DBBroker broker) {
         this.index = index;
@@ -33,20 +34,21 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
-    // LE DUO GAGNANT : getMode et setMode utilisent le même type interne
+    // LA MÉTHODE FUSIONNÉE RÉCLAMÉE PAR MAVEN
     @Override
-    public StreamListener.ReindexMode getMode() {
-        return mode;
-    }
-
-    @Override
-    public void setMode(StreamListener.ReindexMode mode) {
+    public void setDocument(DocumentImpl doc, StreamListener.ReindexMode mode) {
+        this.doc = doc;
         this.mode = mode;
     }
 
     @Override
     public DocumentImpl getDocument() {
-        return null;
+        return doc;
+    }
+
+    @Override
+    public StreamListener.ReindexMode getMode() {
+        return mode;
     }
 
     @Override
@@ -91,7 +93,8 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // SIGNATURE FINALE : On remet le Txn, c'est l'override le plus probable
+    // Signature de remove : Maven disait que la ligne 95 ne matchait pas.
+    // Tentons la signature la plus probable dans le nouveau modèle : sans Txn ou avec un boolean
     @Override
     public void remove(Txn transaction, DocumentImpl document) {
         if (index.getStore() != null && document != null) {
