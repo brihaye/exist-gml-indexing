@@ -32,7 +32,18 @@ public class SpatialIndex extends AbstractIndex {
         return this.store;
     }
 
-    @Override
+	@Override
+    public void remove() {
+        if (store != null) {
+            try {
+                store.shutdown();
+            } catch (Exception e) {
+                // log error
+            }
+        }
+    }
+	
+	@Override
     public void close() {
         if (store != null) {
             store.flush();
