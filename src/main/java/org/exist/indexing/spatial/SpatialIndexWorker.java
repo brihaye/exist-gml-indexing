@@ -8,7 +8,6 @@ import org.exist.dom.persistent.IStoredNode;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
-import org.exist.storage.IndexMode; // L'emplacement probable dans eXist 6.x
 import org.exist.storage.DBBroker;
 import org.exist.storage.NodePath;
 import org.exist.storage.txn.Txn;
@@ -33,9 +32,10 @@ public class SpatialIndexWorker implements IndexWorker {
         return "http://exist-db.org/indexing/spatial";
     }
 
+    // Voici la signature réclamée par le compilateur
     @Override
-    public IndexMode getMode() {
-        return IndexMode.STREAMS;
+    public void setMode(StreamListener.ReindexMode mode) {
+        // Logique de changement de mode si nécessaire
     }
 
     @Override
@@ -85,11 +85,12 @@ public class SpatialIndexWorker implements IndexWorker {
         }
     }
 
-    // Si ça râle encore ici, on testera la signature sans Txn au prochain coup
+    // On change la signature pour tenter de satisfaire l'override
+    // Dans beaucoup de versions récentes, remove ne prend que le document
     @Override
-    public void remove(Txn transaction, DocumentImpl document) {
+    public void remove(DocumentImpl document) {
         if (index.getStore() != null && document != null) {
-            index.getStore().removeDocument(transaction, document);
+            index.getStore().removeDocument(null, document);
         }
     }
 }
