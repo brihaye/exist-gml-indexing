@@ -8,44 +8,31 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.gml2.GMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 public abstract class AbstractSpatialStore {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSpatialStore.class);
     protected final GMLReader gmlReader = new GMLReader();
     
-    // On passe en String pour la clé car getCoordinate() a disparu en eXist 6
-    protected final Map<String, Geometry> internalCache = new ConcurrentHashMap<>();
+    protected AbstractSpatialStore(ProjectionService projectionService) {}
 
-    // Ajout d'un constructeur qui accepte la projection pour éviter l'erreur dans BBoxOrientedSQLStore
-    protected AbstractSpatialStore(ProjectionService projectionService) {
-        // Initialisation si besoin
-    }
+    public abstract void init(Map<String, String> params) throws Exception;
 
     public void addGeometry(Txn txn, NodeProxy node, String gmlString) {
         try {
             Geometry geometry = gmlReader.read(gmlString, new GeometryFactory());
             if (geometry != null) {
-                // Utilisation de toString() car getCoordinate() n'existe plus
-                String nodeId = node.getNodeId().toString();
-                internalCache.put(nodeId, geometry);
-                saveToPersistentStore(txn, nodeId, geometry);
+                saveToPersistentStore(txn, node.getNodeId().toString(), geometry);
             }
         } catch (Exception e) {
-            LOG.error("Erreur GML pour le nœud " + node.getNodeId(), e);
+            LOG.error("Erreur GML", e);
         }
     }
 
-    public void removeDocument(Txn txn, DocumentImpl document) {
-        // Cette méthode doit exister pour être appelée par le Worker
-        removeFromPersistentStore(txn, document);
-        internalCache.clear(); 
-    }
-    
     public abstract void flush();
-    
-    // On met à jour la signature ici aussi (String au lieu de long)
+    public abstract void shutdown() throws Exception;
+
+    // Ces deux-là doivent être implémentées dans BBoxOrientedSQLStore
     protected abstract void saveToPersistentStore(Txn txn, String nodeId, Geometry geom);
     protected abstract void removeFromPersistentStore(Txn txn, DocumentImpl doc);
 }
